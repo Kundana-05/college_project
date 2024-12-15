@@ -1,0 +1,5 @@
+.vscode
+src/sqlite3.c
+src/shell.c
+src/*.h
+target
