@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "sqlite3.h"
 
-// kund
+// kundana
 int main()
 {
     sqlite3 *mydb;
