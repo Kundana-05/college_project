@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "sqlite3.h"
 
+// kund
 int main()
 {
     sqlite3 *mydb;
