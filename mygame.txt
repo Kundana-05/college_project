@@ -1,0 +1,167 @@
+#include <stdio.h>
+#include <string.h>
+#include <time.h>
+#include <stdlib.h>
+#define MAX_WORDS 10
+#define MAX_LENGTH 80
+
+struct user_details
+{
+    char Name[20];
+    int Age;
+};
+int user_choice();
+void Game_Rules();
+void jumbleWord(char *word);
+int gameplay(char userchoicewords[MAX_WORDS][MAX_LENGTH]);
+
+int main()
+{
+    int choice, i, j;
+    struct user_details u;
+    char Easy[MAX_WORDS][MAX_LENGTH] = {"BUS", "BALL", "RIVER", "CLOUD", "APPLE", "BUTTER", "PENCIL", "ANIMAL", "BOTTLE", "NATURE"};
+    char Medium[MAX_WORDS][MAX_LENGTH] = {"GRASS", "WHALE", "CANDLE", "GIRAFFE", "DOLPHIN", "PYRAMID", "PENGUIN", "FOREST", "CUSHION", "JOURNAL"};
+    char Hard[MAX_WORDS][MAX_LENGTH] = {"CRYSTAL", "FIREWORK", "ICEBERG", "DUNGEON", "MEADOWS", "LANTERNS", "CITADEL", "HARMONY", "SNOWFLAKE", "SANCTUARY"};
+    char userchoicewords[MAX_WORDS][MAX_LENGTH] = {""};
+    int play_again;
+
+    printf("WELCOME TO WORD SCRAMBLE GAME!!!\n");
+    printf("ENTER YOUR NAME:\n");
+    scanf("%s", u.Name);
+    printf("ENTER YOUR AGE:\n");
+    while (scanf("%d", &u.Age) != 1)
+    {
+        printf("INCORRECT AGE \n HIT ENTER AND ENTER AGAIN:\n");
+        while (getchar() != '\n')
+        {
+        } // to avoid input buffer
+    }
+
+    do
+    {
+        do
+        {
+            choice = user_choice();
+            switch (choice)
+            {
+            case 1:
+                memcpy(userchoicewords, Easy, sizeof(Easy));
+                printf("YOU HAVE CHOSEN EASY LEVEL! LETS START!\n");
+                break;
+            case 2:
+                memcpy(userchoicewords, Medium, sizeof(Medium));
+                printf("YOU HAVE CHOSEN MEDIUM LEVEL! LETS START!\n");
+                break;
+            case 3:
+                memcpy(userchoicewords, Hard, sizeof(Hard));
+                printf("YOU HAVE CHOSEN HARD LEVEL! LETS START!\n");
+                break;
+            }
+        } while (choice == -1);
+        srand(time(NULL));
+
+        Game_Rules();
+
+        play_again = gameplay(userchoicewords);
+    } while (play_again == 2);
+    printf("THANK YOU FOR PLAYING! SEE YOU AGAIN!");
+}
+
+int user_choice()
+{
+    int choice;
+    printf("PRESS \'1\' FOR EASY LEVEL\n");
+    printf("PRESS \'2\' FOR MEDIUM LEVEL\n");
+    printf("PRESS \'3\' FOR HARD LEVEL\n");
+    scanf("%d", &choice);
+    if (choice != 1 && choice != 2 && choice != 3)
+    {
+        printf("CHOOSE CORRECT OPTION\n");
+        return -1;
+    }
+    return choice;
+}
+
+void jumbleWord(char *word)
+{
+    int length, i, j;
+    char temp;
+    char *initial = strdup(word);
+    length = strlen(word);
+    do
+    {
+        for (i = length - 1; i > 0; i--)
+        {
+            j = rand() % (i + 1);
+            temp = word[i];
+            word[i] = word[j];
+            word[j] = temp;
+        }
+
+    } while (strcmp(word, initial) == 0);
+}
+
+void Game_Rules()
+{
+    printf("\n-INSTRUCTIONS-\n");
+    printf("1. YOU WILL BE GIVEN A JUMBLE WORD TO SOLVE.\n");
+    printf("2. YOU WILL HAVE 5 ATTEMPTS TO GUESS THE CORRECT WORD.\n");
+    printf("3. ENTER ALL YOUR GUESSES IN UPPERCASE ONLY.\n");
+    printf("4. IF YOU GUESS CORRECTLY ,YOU WILL MOVE TO NEXT LEVEL.\n");
+    printf("5. TRY TO SOLVE ALL 10 WORDS GIVEN IN YOUR CHOSEN LEVEL.\n\n");
+    printf("--------------GOOD LUCK------------------\n");
+}
+
+int gameplay(char userchoicewords[MAX_WORDS][MAX_LENGTH])
+{
+
+    int i, j, number;
+    char word[MAX_LENGTH];
+    int MAX_ATTEMPTS = 5;
+    char temp[MAX_WORDS][MAX_LENGTH];
+    for (j = 0; j < MAX_WORDS; j++)
+    {
+        strcpy(temp[j], userchoicewords[j]);
+    }
+    for (i = 0; i < MAX_WORDS; i++)
+    {
+        MAX_ATTEMPTS = 5;
+        jumbleWord(userchoicewords[i]);
+        printf("LEVEL %d :\n", i + 1);
+        printf("\n%s\n", userchoicewords[i]);
+        while (MAX_ATTEMPTS > 0)
+        {
+            printf("ENTER YOUR GUESS:\n");
+            scanf("%s", word);
+            if (strcmp(word, temp[i]) == 0)
+            {
+                printf("\nCORRECT GUESS!!\nYOU HAVE PASSED LEVEL %d\n", i + 1);
+                if (i == MAX_WORDS - 1)
+                    printf("CONGRATULATIONS YOU HAVE COMPLETED ALL 10 LEVELS OF THIS DIFFICULTY!\n");
+
+                break;
+            }
+            else
+            {
+                printf("\nWRONG ANSWER ,%d ATTEMPTS LEFT\n", MAX_ATTEMPTS - 1);
+                MAX_ATTEMPTS--;
+            }
+        }
+        if (MAX_ATTEMPTS == 0)
+        {
+            printf("ALL YOUR ATTEMPTS ARE OVER!!");
+            printf("YOU WANNA CONTINUE THE GAME?\n");
+            printf("\nCHOICE 1:RETRY THE LEVEL AND CONTINUE PLAYING\nPRESS \'1\' \n");
+            printf("\nCHOICE 2:CHANGE THE DIFFICULTY LEVEL AND CONTINUE PLAYING\nPRESS \'2\' \n");
+            printf("\nCHOICE 3:QUIT!\nPRESS \'3\' \n");
+            scanf("%d", &number);
+            if (number == 1)
+            {
+                printf("\nRETRY THE LEVEL %d:\n", i + 1);
+                i--;
+                continue;
+            }
+            return number;
+        }
+    }
+}
